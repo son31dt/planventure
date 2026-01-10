@@ -1,6 +1,11 @@
 from . import db
 from datetime import datetime, timezone
-from werkzeug.security import generate_password_hash, check_password_hash
+import sys
+import os
+
+# Add parent directory to path to import utils
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils import hash_password, verify_password
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -15,12 +20,12 @@ class User(db.Model):
     is_active = db.Column(db.Boolean, default=True)
     
     def set_password(self, password):
-        """Hash and set the user's password."""
-        self.password_hash = generate_password_hash(password)
+        """Hash and set the user's password using bcrypt with automatic salt."""
+        self.password_hash = hash_password(password)
     
     def check_password(self, password):
         """Check if the provided password matches the hash."""
-        return check_password_hash(self.password_hash, password)
+        return verify_password(password, self.password_hash)
     
     def to_dict(self):
         """Convert user object to dictionary."""
