@@ -22,7 +22,7 @@ const Navbar = () => {
         >
           Planventure
         </Typography>
-        <Stack direction="row" spacing={2}>
+        <Stack direction="row" spacing={1.5}>
           {isAuthenticated ? (
             <>
               <Button 
@@ -49,12 +49,12 @@ const Navbar = () => {
                 Login
               </Button>
               <Button 
-                color="inherit" 
-                variant="outlined" 
-                onClick={() => navigate('/signup')}
-                sx={{ borderColor: 'inherit' }}
+                variant="contained" 
+                color="secondary"
+                onClick={() => navigate('/login')}
+                sx={{ color: 'common.white' }}
               >
-                Sign Up
+                Get Started
               </Button>
             </>
           )}

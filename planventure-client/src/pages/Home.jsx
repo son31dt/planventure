@@ -1,4 +1,4 @@
-import { Box, Button, Container, Typography } from '@mui/material';
+import { Box, Button, Container, Typography, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import planventureLogo from '../assets/planventure-logo.svg';
 
@@ -44,14 +44,22 @@ const Home = () => {
         >
           Your next adventure begins here. Start planning unforgettable trips with our intuitive planning tools and make every journey memorable.
         </Typography>
-        <Button 
-          variant="contained" 
-          size="large"
-          onClick={() => navigate('/login')}
-          sx={{ mt: 2 }}
-        >
-          Get Started
-        </Button>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mt: 3 }}>
+          <Button 
+            variant="contained" 
+            size="large"
+            onClick={() => navigate('/login')}
+          >
+            Get Started
+          </Button>
+          <Button 
+            variant="outlined" 
+            size="large"
+            onClick={() => navigate('/signup')}
+          >
+            Create Account
+          </Button>
+        </Stack>
       </Box>
     </Container>
   );
