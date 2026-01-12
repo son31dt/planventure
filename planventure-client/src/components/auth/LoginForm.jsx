@@ -11,12 +11,12 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAuth } from '../../context/AuthContext';
-import { api } from '../../services/api';
+import { authService } from '../../services/authService';
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, setIsAuthenticated } = useAuth();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -90,19 +90,16 @@ const LoginForm = () => {
     setError('');
 
     try {
-      const response = await api.auth.login(formData);
-      console.log('Login response:', response);
-
+      const response = await authService.login(formData);
+      
       if (response.token) {
-        login(response); // Pass the entire response
-        console.log('Login successful, redirecting to dashboard...');
+        login(response);
         navigate('/dashboard', { replace: true });
       } else {
         setError('Invalid login response');
       }
     } catch (err) {
-      console.error('Login error:', err);
-      setError(err.message || 'An error occurred during login');
+      setError(err.message || 'Login failed');
     } finally {
       setIsLoading(false);
     }
@@ -191,7 +188,10 @@ const LoginForm = () => {
 
       <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
         Don't have an account?{' '}
-        <Button onClick={() => navigate('/signup')} stx={{ testTransform: 'none' }}>
+        <Button 
+          onClick={() => navigate('/signup')} 
+          sx={{ textTransform: 'none' }}
+        >
           Sign up
         </Button>
       </Typography>

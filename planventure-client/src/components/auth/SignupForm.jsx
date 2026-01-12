@@ -10,13 +10,11 @@ import {
   IconButton
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { useAuth } from '../../context/AuthContext';
 import { Link as RouterLink } from 'react-router-dom';
-import { api } from '../../services/api';
+import { authService } from '../../services/authService';
 
 const SignupForm = () => {
   const navigate = useNavigate();
-  const { setIsAuthenticated } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -92,10 +90,8 @@ const SignupForm = () => {
         password: formData.password
       };
 
-      const response = await api.auth.register(userData);
-      console.log('Signup response:', response); // Debug log
+      await authService.register(userData);
       
-      // Don't check for accessToken, just redirect after successful registration
       navigate('/login', { 
         replace: true,
         state: { 
@@ -105,7 +101,6 @@ const SignupForm = () => {
       });
       
     } catch (err) {
-      console.error('Signup error:', err); // Debug log
       setError(err.message || 'Registration failed. Please try again.');
     } finally {
       setIsLoading(false);
