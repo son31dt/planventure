@@ -87,7 +87,7 @@ const navigate = useNavigate();
   );
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: 'auto', p: { xs: 2, sm: 3 } }}>
+    <Box sx={{ p: { xs: 2, sm: 3 } }}>
       <Typography variant="h4" component="h1" gutterBottom>
         My Trips
       </Typography>

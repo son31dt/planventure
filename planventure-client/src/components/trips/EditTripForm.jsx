@@ -80,7 +80,7 @@ const EditTripForm = ({ trip }) => {
   };
 
   return (
-    <Paper elevation={2} sx={{ p: 4, maxWidth: 600, mx: 'auto', mt: 4 }}>
+    <Paper elevation={2} sx={{ p: { xs: 3, md: 4 }, width: '100%' }}>
       <Box
         component="form"
         onSubmit={handleSubmit}

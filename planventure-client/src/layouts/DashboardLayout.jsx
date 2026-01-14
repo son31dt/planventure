@@ -6,15 +6,13 @@ import {
   ListItem,
   ListItemButton, 
   ListItemIcon, 
-  ListItemText, 
-  IconButton,
+  ListItemText,
   useTheme,
   useMediaQuery,
   Divider,
   Typography
 } from '@mui/material';
 import {
-  Menu as MenuIcon,
   Dashboard as DashboardIcon,
   Map as MapIcon,
   ListAlt as ListAltIcon,
@@ -93,72 +91,60 @@ const DashboardLayout = ({ children }) => {
   );
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <Navbar>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          edge="start"
-          onClick={handleDrawerToggle}
-          sx={{ mr: 2, display: { sm: 'none' } }}
-        >
-          <MenuIcon />
-        </IconButton>
-      </Navbar>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Navbar />
       
-      <Box
-        component="nav"
-        sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
-      >
-        {/* Mobile drawer */}
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{ keepMounted: true }}
-          sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { 
-              boxSizing: 'border-box', 
-              width: DRAWER_WIDTH,
-              height: 'calc(100vh - 56px)', // Subtract footer height
-              marginTop: '64px' // Account for navbar
-            },
-          }}
+      <Box sx={{ display: 'flex', flexGrow: 1 }}>
+        <Box
+          component="nav"
+          sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
         >
-          {drawer}
-        </Drawer>
+          {/* Mobile drawer */}
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{ keepMounted: true }}
+            sx={{
+              display: { xs: 'block', sm: 'none' },
+              '& .MuiDrawer-paper': { 
+                boxSizing: 'border-box', 
+                width: DRAWER_WIDTH,
+              },
+            }}
+          >
+            {drawer}
+          </Drawer>
+          
+          {/* Desktop drawer */}
+          <Drawer
+            variant="permanent"
+            sx={{
+              display: { xs: 'none', sm: 'block' },
+              '& .MuiDrawer-paper': { 
+                boxSizing: 'border-box', 
+                width: DRAWER_WIDTH,
+                borderRight: '1px solid rgba(0, 0, 0, 0.12)',
+                position: 'relative',
+              },
+            }}
+            open
+          >
+            {drawer}
+          </Drawer>
+        </Box>
         
-        {/* Desktop drawer */}
-        <Drawer
-          variant="permanent"
+        <Box
+          component="main"
           sx={{
-            display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { 
-              boxSizing: 'border-box', 
-              width: DRAWER_WIDTH,
-              borderRight: '1px solid rgba(0, 0, 0, 0.12)',
-              marginTop: '64px', // Navbar height
-              height: 'calc(100vh - 78px - 58px)', // Subtract navbar (64px) and footer (56px) heights
-              overflowY: 'auto' // Add scrolling for overflow content
-            },
+            flexGrow: 1,
+            p: 3,
+            width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
+            overflowY: 'auto'
           }}
-          open
         >
-          {drawer}
-        </Drawer>
-      </Box>
-      
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` },
-          marginTop: '64px'
-        }}
-      >
-        {children}
+          {children}
+        </Box>
       </Box>
     </Box>
   );

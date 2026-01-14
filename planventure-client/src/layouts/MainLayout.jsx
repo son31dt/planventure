@@ -12,24 +12,21 @@ const MainLayout = ({ children }) => {
       position: 'relative'
     }}>
       <Navbar />
-      <Container 
+      <Box
         component="main" 
-        maxWidth="lg"
         sx={{ 
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
           width: '100%',
           py: 3,
-          px: { xs: 2, sm: 3, md: 4 }, // Responsive padding
+          px: { xs: 2, sm: 3, md: 4 },
           mt: 8,
           mb: 10
         }}
       >
         {children}
-      </Container>
+      </Box>
       <Footer />
     </Box>
   );

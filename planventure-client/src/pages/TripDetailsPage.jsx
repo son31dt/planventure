@@ -53,11 +53,24 @@ const TripDetailsPage = () => {
         const response = await tripService.getTrip(tripId);
         console.log('TripDetailsPage received:', response);
 
-        if (!response || !response.trip) {
+        // Handle different response formats from the API
+        let tripData = null;
+        if (response && response.trip) {
+          tripData = response.trip;
+        } else if (response && response.id) {
+          tripData = response;
+        }
+
+        if (!tripData) {
           throw new Error('Trip not found');
         }
 
-        setTrip(response.trip);
+        setTrip(tripData);
+
+        // Preload itinerary if it exists on the trip payload
+        if (tripData.itinerary && Object.keys(tripData.itinerary).length > 0) {
+          setItinerary(tripData.itinerary);
+        }
       } catch (err) {
         console.error('Error fetching trip:', err);
         setError(err.message || 'Failed to load trip details');
@@ -143,7 +156,7 @@ const TripDetailsPage = () => {
 
   if (loading) {
     return (
-      <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
+      <Box sx={{ p: 3 }}>
         <Skeleton variant="text" height={40} width={200} />
         <Skeleton variant="rectangular" height={200} sx={{ mt: 2 }} />
       </Box>
@@ -152,12 +165,12 @@ const TripDetailsPage = () => {
 
   if (error) {
     return (
-      <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
+      <Box sx={{ p: 3 }}>
         <Alert 
           severity="error"
           action={
             <Button color="inherit" size="small" onClick={() => navigate('/dashboard')}>
-              Back to Dashboard
+              BACK TO DASHBOARD
             </Button>
           }
         >
@@ -169,8 +182,15 @@ const TripDetailsPage = () => {
 
   if (!trip) {
     return (
-      <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
-        <Alert severity="error">
+      <Box sx={{ p: 3 }}>
+        <Alert 
+          severity="error"
+          action={
+            <Button color="inherit" size="small" onClick={() => navigate('/dashboard')}>
+              BACK TO DASHBOARD
+            </Button>
+          }
+        >
           Trip not found
         </Alert>
       </Box>
@@ -178,7 +198,7 @@ const TripDetailsPage = () => {
   }
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
+    <Box sx={{ p: 3 }}>
       <Button
         startIcon={<ArrowBackIcon />}
         onClick={() => navigate('/dashboard')}
@@ -228,14 +248,14 @@ const TripDetailsPage = () => {
             <Box sx={{ mb: 4 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6">Accommodations</Typography>
-                {accommodations.length > 0 && (
-                  <Button
-                    startIcon={<AddIcon />}
-                    onClick={handleAddAccommodation}
-                  >
-                    Add Accommodation
-                  </Button>
-                )}
+                <Button
+                  startIcon={<AddIcon />}
+                  onClick={handleAddAccommodation}
+                  variant="outlined"
+                  size="small"
+                >
+                  Add Accommodation
+                </Button>
               </Box>
               
               {accommodations.length === 0 ? (
@@ -265,14 +285,14 @@ const TripDetailsPage = () => {
             <Box>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6">Transportation</Typography>
-                {transportation.length > 0 && (
-                  <Button
-                    startIcon={<AddIcon />}
-                    onClick={handleAddTransportation}
-                  >
-                    Add Transportation
-                  </Button>
-                )}
+                <Button
+                  startIcon={<AddIcon />}
+                  onClick={handleAddTransportation}
+                  variant="outlined"
+                  size="small"
+                >
+                  Add Transportation
+                </Button>
               </Box>
               
               {transportation.length === 0 ? (

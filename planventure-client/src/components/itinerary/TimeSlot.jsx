@@ -15,14 +15,31 @@ import {
   Save as SaveIcon,
   Cancel as CancelIcon,
   AccessTime as TimeIcon,
-  Place as PlaceIcon
+  Place as PlaceIcon,
+  Notes as NotesIcon
 } from '@mui/icons-material';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
 
 const TimeSlot = ({ slot, onUpdate, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedSlot, setEditedSlot] = useState(slot);
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const nextErrors = {};
+    if (!editedSlot.activity?.trim()) nextErrors.activity = 'Activity is required';
+    if (!editedSlot.time || !dayjs(editedSlot.time, 'HH:mm', true).isValid()) {
+      nextErrors.time = 'Time must be HH:mm';
+    }
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
 
   const handleSave = () => {
+    if (!validate()) return;
     onUpdate(editedSlot);
     setIsEditing(false);
   };
@@ -44,18 +61,30 @@ const TimeSlot = ({ slot, onUpdate, onDelete }) => {
               value={editedSlot.time}
               onChange={(e) => setEditedSlot({ ...editedSlot, time: e.target.value })}
               InputLabelProps={{ shrink: true }}
+              error={!!errors.time}
+              helperText={errors.time}
             />
             <TextField
               fullWidth
               label="Activity"
               value={editedSlot.activity}
               onChange={(e) => setEditedSlot({ ...editedSlot, activity: e.target.value })}
+              error={!!errors.activity}
+              helperText={errors.activity}
             />
             <TextField
               fullWidth
               label="Location"
               value={editedSlot.location}
               onChange={(e) => setEditedSlot({ ...editedSlot, location: e.target.value })}
+            />
+            <TextField
+              fullWidth
+              label="Notes"
+              multiline
+              minRows={2}
+              value={editedSlot.notes || ''}
+              onChange={(e) => setEditedSlot({ ...editedSlot, notes: e.target.value })}
             />
             <TextField
               select
@@ -100,6 +129,14 @@ const TimeSlot = ({ slot, onUpdate, onDelete }) => {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                   <PlaceIcon fontSize="small" />
                   <Typography variant="body2">{slot.location}</Typography>
+                </Box>
+              )}
+              {slot.notes && (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  <NotesIcon fontSize="small" />
+                  <Typography variant="body2" noWrap maxWidth={240}>
+                    {slot.notes}
+                  </Typography>
                 </Box>
               )}
             </Stack>

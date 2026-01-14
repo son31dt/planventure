@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Box,
   Paper,
@@ -11,7 +11,8 @@ import {
 import {
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
-  Add as AddIcon
+  Add as AddIcon,
+  Event as EventIcon
 } from '@mui/icons-material';
 import TimeSlot from './TimeSlot';
 import dayjs from 'dayjs';
@@ -22,15 +23,19 @@ const ItineraryDay = ({ date, slots = [], onAddSlot, onUpdateSlot, onDeleteSlot 
   const handleAddSlot = () => {
     const newSlot = {
       id: Date.now(),
-      time: '12:00',
-      activity: '',
+      time: dayjs(date).hour(9).minute(0).format('HH:mm'),
+      activity: 'New activity',
       location: '',
-      type: 'activity'
+      type: 'activity',
+      notes: ''
     };
     onAddSlot(date, newSlot);
   };
 
-  const sortedSlots = [...slots].sort((a, b) => a.time.localeCompare(b.time));
+  const sortedSlots = useMemo(
+    () => [...slots].sort((a, b) => a.time.localeCompare(b.time)),
+    [slots]
+  );
 
   return (
     <Paper elevation={1} sx={{ mb: 2, overflow: 'hidden' }}>
@@ -45,9 +50,15 @@ const ItineraryDay = ({ date, slots = [], onAddSlot, onUpdateSlot, onDeleteSlot 
         }}
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <Typography variant="h6">
-          {dayjs(date).format('dddd, MMMM D')}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <EventIcon fontSize="small" />
+          <Typography variant="h6">
+            {dayjs(date).format('dddd, MMMM D')}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            ({sortedSlots.length} planned)
+          </Typography>
+        </Box>
         <IconButton size="small">
           {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </IconButton>

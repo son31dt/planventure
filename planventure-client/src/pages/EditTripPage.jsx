@@ -15,10 +15,18 @@ const EditTripPage = () => {
     const fetchTrip = async () => {
       try {
         const response = await tripService.getTrip(tripId);
-        if (!response || !response.trip) {
+        // Handle different response formats
+        let tripData = null;
+        if (response && response.trip) {
+          tripData = response.trip;
+        } else if (response && response.id) {
+          tripData = response;
+        }
+
+        if (!tripData) {
           throw new Error('Trip not found');
         }
-        setTrip(response.trip);
+        setTrip(tripData);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -31,7 +39,7 @@ const EditTripPage = () => {
 
   if (loading) {
     return (
-      <Box sx={{ maxWidth: 600, mx: 'auto', p: 3 }}>
+      <Box sx={{ p: 3 }}>
         <Skeleton variant="rectangular" height={400} />
       </Box>
     );
@@ -39,7 +47,7 @@ const EditTripPage = () => {
 
   if (error) {
     return (
-      <Box sx={{ maxWidth: 600, mx: 'auto', p: 3 }}>
+      <Box sx={{ p: 3 }}>
         <Alert 
           severity="error"
           action={
@@ -58,7 +66,11 @@ const EditTripPage = () => {
     return null;
   }
 
-  return <EditTripForm trip={trip} />;
+  return (
+    <Box sx={{ p: 3 }}>
+      <EditTripForm trip={trip} />
+    </Box>
+  );
 };
 
 export default EditTripPage;
